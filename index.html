@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+    <meta charset="utf-8">
+    <title>simple-clock</title>
+    <style>
+        body {
+            background: #d9dedc;
+            font-family:'Lato', sans-serif;
+            letter-spacing: 4px;
+            position: relative;
+            height: 500px;
+        }
+        .container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translateY(-50%) translateX(-50%);
+            -webkit-transform: translateY(-50%) translateX(-50%);
+            font-weight: bold;
+            text-align: center;
+        }
+        .clock_time {
+            color: #2e2d2b;
+            font-size: 100pt;
+            padding: 2px 0;
+        }
+        .clock_date {
+            color: #ff8e3c;
+            margin: auto;
+            font-size: 25pt;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+       <div class="clock_time"></div>
+       <div class="clock_date"></div>
+    </div>
+
+<script>
+const padNum = (num) => {
+    return ("00" + num).slice(-2)
+}
+const randomColHex = () => {
+    const hex = (Math.random() * 0xFFFFFF | 0).toString(16);
+    return "#" + ("000000" + hex).slice(-6);
+}
+function clock() {
+    const weeks = new Array("日","月","火","水","木","金","土");
+
+    const now    = new Date();
+    const year   = now.getFullYear();
+    const month  = padNum(now.getMonth() + 1)
+    const day    = padNum(now.getDate());
+    const week   = weeks[now.getDay()];
+    const hour   = padNum(now.getHours());
+    const minute = padNum(now.getMinutes());
+    const second = padNum(now.getSeconds());
+
+    if (second.slice(-1) == 0) {
+        document.querySelector(".clock_date").style.color = randomColHex();
+    }
+    document.querySelector(".clock_time").innerHTML = `<span>${hour}:${minute}:${second}</span>`;
+    document.querySelector(".clock_date").innerHTML = `<span>${year}/${month}/${day}(${week})</span>`;
+}
+
+window.onload = clock();
+setInterval(clock, 1000);
+</script>
+
+</body>
+</html>
