@@ -6,70 +6,100 @@
     <meta charset="utf-8">
     <title>simple-clock</title>
     <style>
+        /* for particle.js */
+        .background {
+            position: absolute;
+            display: block;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+        /* main */
         body {
-            background: #d9dedc;
             font-family:'Lato', sans-serif;
-            letter-spacing: 4px;
-            position: relative;
-            height: 500px;
+            background: #333;
         }
         .container {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translateY(-50%) translateX(-50%);
-            -webkit-transform: translateY(-50%) translateX(-50%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .box {
+            letter-spacing: 4px;
             font-weight: bold;
             text-align: center;
+            z-index: 1;
         }
         .clock_time {
-            color: #2e2d2b;
+            color: #fff;
             font-size: 100pt;
             padding: 2px 0;
         }
         .clock_date {
-            color: #ff8e3c;
+            color: #fff;
             margin: auto;
             font-size: 25pt;
         }
     </style>
 </head>
 <body>
+    <canvas class="background"></canvas>
     <div class="container">
-       <div class="clock_time"></div>
-       <div class="clock_date"></div>
+        <div class="box">
+            <div class="clock_time"></div>
+            <div class="clock_date"></div>
+        </div>
     </div>
 
-<script>
-const padNum = (num) => {
-    return ("00" + num).slice(-2)
-}
-const randomColHex = () => {
-    const hex = (Math.random() * 0xFFFFFF | 0).toString(16);
-    return "#" + ("000000" + hex).slice(-6);
-}
-function clock() {
-    const weeks = new Array("日","月","火","水","木","金","土");
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/particlesjs/2.2.2/particles.min.js"></script>
+    <script>
+        const padNum = (num) => {
+            return ("00" + num).slice(-2)
+        }
+        const randomColHex = () => {
+            const hex = (Math.random() * 0xFFFFFF | 0).toString(16);
+            return "#" + ("000000" + hex).slice(-6);
+        }
+        const weeks = new Array("日","月","火","水","木","金","土");
+        const clock = () => {
+            const now    = new Date();
+            const year   = now.getFullYear();
+            const month  = padNum(now.getMonth() + 1)
+            const day    = padNum(now.getDate());
+            const week   = weeks[now.getDay()];
+            const hour   = padNum(now.getHours());
+            const minute = padNum(now.getMinutes());
+            const second = padNum(now.getSeconds());
 
-    const now    = new Date();
-    const year   = now.getFullYear();
-    const month  = padNum(now.getMonth() + 1)
-    const day    = padNum(now.getDate());
-    const week   = weeks[now.getDay()];
-    const hour   = padNum(now.getHours());
-    const minute = padNum(now.getMinutes());
-    const second = padNum(now.getSeconds());
+            if (second.slice(-1) == 0) {
+                document.querySelector(".clock_date").style.color = randomColHex();
+            }
+            document.querySelector(".clock_time").innerHTML = `<span>${hour}:${minute}:${second}</span>`;
+            document.querySelector(".clock_date").innerHTML = `<span>${year}/${month}/${day}(${week})</span>`;
+        }
 
-    if (second.slice(-1) == 0) {
-        document.querySelector(".clock_date").style.color = randomColHex();
-    }
-    document.querySelector(".clock_time").innerHTML = `<span>${hour}:${minute}:${second}</span>`;
-    document.querySelector(".clock_date").innerHTML = `<span>${year}/${month}/${day}(${week})</span>`;
-}
+        window.onload = function() {
+            clock();
+            Particles.init({
+                selector: ".background",
+                sizeVariations: 20,
+                color: [
+                    "#25C5BF",
+                    "#F58C5F",
+                    "#E7E4CB",
+                    "#ffd900",
+                    "#C8EC3E"
+                ],
+                connectParticles: true,
+                speed: .75,
+                minDistance: 150,
+                maxParticles: 80
+            });
+        };
 
-window.onload = clock();
-setInterval(clock, 1000);
-</script>
+        setInterval(clock, 1000);
+    </script>
 
 </body>
 </html>
